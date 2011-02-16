@@ -1,0 +1,21 @@
+diff -ur Kernel_Original/arch/arm/mach-s5pv210/max8998_consumer.c Kernel/arch/arm/mach-s5pv210/max8998_consumer.c
+--- Kernel_Original/arch/arm/mach-s5pv210/max8998_consumer.c	2011-01-17 20:59:57.000000000 +0900
++++ Kernel/arch/arm/mach-s5pv210/max8998_consumer.c	2011-02-12 19:12:10.000000000 +0900
+@@ -88,11 +88,11 @@
+ static const unsigned int frequency_match_1GHZ[][4] = {
+ /* frequency, Mathced VDD ARM voltage , Matched VDD INT*/
+ #if 1
+-        {1000000, 1250, 1100, 0},
+-        {800000, 1200, 1100, 1},
+-        {400000, 1050, 1100, 2},
+-        {200000, 950, 1100, 4},
+-        {100000, 950, 1000, 5},
++        {1000000, 1300, 1100, 0},
++        {800000, 1300, 1100, 1},
++        {400000, 1300, 1100, 2},
++        {200000, 1300, 1100, 4},
++        {100000, 1300, 1000, 5},
+ #else //just for dvs test
+         {1000000, 1250, 1100, 0},
+         {800000, 1250, 1100, 1},
+
