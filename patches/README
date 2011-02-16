@@ -1,0 +1,5 @@
+Applying patches and compile a kernel HOWTO ->
+1. put .patch files with SHW-M110S source code "Kernel" directory side by side
+2. patch -p0 < OC???.patch
+3. cd Kernel
+4. make
