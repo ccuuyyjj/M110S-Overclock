@@ -1,5 +1,13 @@
+English
 Applying patches and compile a kernel HOWTO ->
 1. put .patch files with SHW-M110S source code "Kernel" directory side by side
 2. patch -p0 < OC???.patch
 3. cd Kernel
 4. make
+
+한국어
+커널 소스에 패치 적용하고 컴파일하는 방법
+1. .patch파일들을 SHW-M110S 커널 소스 풀어놓은 폴더에서 Kernel 디렉토리가 위치하는 경로에 넣습니다.
+2. patch -p0 < OC???.patch 라고 명령어를 입력하여 패치를 적용시킵니다.
+3. cd Kernel 해서 커널 소스 디렉토리 안으로 들어갑니다.
+4. make 명령어로 커널 컴파일을 시작합니다.
