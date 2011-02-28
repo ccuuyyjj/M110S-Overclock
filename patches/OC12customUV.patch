@@ -1,0 +1,263 @@
+diff -ur Kernel_Original/arch/arm/mach-s5pv210/clock.c Kernel/arch/arm/mach-s5pv210/clock.c
+--- Kernel_Original/arch/arm/mach-s5pv210/clock.c	2011-01-07 14:48:18.000000000 +0900
++++ Kernel/arch/arm/mach-s5pv210/clock.c	2011-02-28 23:41:14.000000000 +0900
+@@ -122,12 +122,11 @@
+ 
+ 
+ struct S5PC110_clk_info clk_info[] = {
+-#if USE_1DOT2GHZ
+ {
+ 	// APLL:1200,ARMCLK:1200,HCLK_MSYS:200,MPLL:667,HCLK_DSYS:166,HCLK_PSYS:133,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
+ 	.armclk		=	1200* MHZ,
+ 	.apllout	=	1200* MHZ,
+-	.apll_mps	=	((150<<16)|(3<<8)|1),
++	.apll_mps	=	((300<<16)|(6<<8)|1),
+ 	.msys_div0	=	(0|(5<<4)|(5<<8)|(1<<12)),
+ 	.mpllout	=	667* MHZ,
+ 	.mpll_mps	=	((667<<16)|(12<<8)|(1)),
+@@ -135,12 +134,12 @@
+ 	.div2val	=	((3<<0)|(3<<4)|(3<<8)),
+ 	.dmc0_div6 	=	(3<<28),
+ },
+-#endif// A extra entry for 1200MHZ level 
++// A extra entry for 1200MHZ level 
+ {
+ 	// APLL:1000,ARMCLK:1000,HCLK_MSYS:200,MPLL:667,HCLK_DSYS:166,HCLK_PSYS:133,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
+ 	.armclk		=	1000* MHZ,
+ 	.apllout	=	1000* MHZ,
+-	.apll_mps	=	((125<<16)|(3<<8)|1),
++	.apll_mps	=	((250<<16)|(6<<8)|1),
+ 	.msys_div0	=	(0|(4<<4)|(4<<8)|(1<<12)),
+ 	.mpllout	=	667* MHZ,
+ 	.mpll_mps	=	((667<<16)|(12<<8)|(1)),
+@@ -152,7 +151,7 @@
+ 	// APLL:800,ARMCLK:800,HCLK_MSYS:200,MPLL:667,HCLK_DSYS:166,HCLK_PSYS:133,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
+ 	.armclk		=	800* MHZ,
+ 	.apllout	=	800* MHZ,
+-	.apll_mps	=	((100<<16)|(3<<8)|1),
++	.apll_mps	=	((200<<16)|(6<<8)|1),
+ 	.msys_div0	=	(0|(3<<4)|(3<<8)|(1<<12)),
+ 	.mpllout	=	667* MHZ,
+ 	.mpll_mps	=	((667<<16)|(12<<8)|(1)),
+@@ -164,7 +163,7 @@
+ 	// APLL:800,ARMCLK:400,HCLK_MSYS:200,MPLL:667,HCLK_DSYS:166,HCLK_PSYS:133,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
+ 	.armclk		=	400* MHZ,
+ 	.apllout	=	800* MHZ,
+-	.apll_mps	=	((100<<16)|(3<<8)|1),
++	.apll_mps	=	((200<<16)|(6<<8)|1),
+ 	.msys_div0	=	(1|(3<<4)|(1<<8)|(1<<12)),
+ 	.mpllout	=	667* MHZ,
+ 	.mpll_mps	=	((667<<16)|(12<<8)|(1)),
+@@ -176,7 +175,7 @@
+ 	// APLL:800,ARMCLK:200,HCLK_MSYS:200,MPLL:667,HCLK_DSYS:166,HCLK_PSYS:133,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
+ 	.armclk		=	200* MHZ,
+ 	.apllout	=	800* MHZ,
+-	.apll_mps	=	((100<<16)|(3<<8)|1),
++	.apll_mps	=	((200<<16)|(6<<8)|1),
+ 	.msys_div0	=	(3|(3<<4)|(0<<8)|(1<<12)),
+ 	.mpllout	=	667* MHZ,
+ 	.mpll_mps	=	((667<<16)|(12<<8)|(1)),
+@@ -188,7 +187,7 @@
+ 	// APLL:800,ARMCLK:100,HCLK_MSYS:100,MPLL:667,HCLK_DSYS:83,HCLK_PSYS:66,PCLK_MSYS:100,PCLK_DSYS:83,PCLK_PSYS:66
+ 	.armclk		=	100* MHZ,
+ 	.apllout	=	800* MHZ,
+-	.apll_mps	=	((100<<16)|(3<<8)|1),
++	.apll_mps	=	((200<<16)|(6<<8)|1),
+ 	.msys_div0	=	(7|(3<<4)|(0<<8)|(0<<12)),
+ 	.mpllout	=	667* MHZ,
+ 	.mpll_mps	=	((667<<16)|(12<<8)|(1)),
+diff -ur Kernel_Original/arch/arm/mach-s5pv210/cpu-freq.c Kernel/arch/arm/mach-s5pv210/cpu-freq.c
+--- Kernel_Original/arch/arm/mach-s5pv210/cpu-freq.c	2010-10-30 20:36:27.000000000 +0900
++++ Kernel/arch/arm/mach-s5pv210/cpu-freq.c	2011-02-28 23:41:14.000000000 +0900
+@@ -46,9 +46,9 @@
+ unsigned int dvfs_change_direction;
+ #define CLIP_LEVEL(a, b) (a > b ? b : a)
+ 
+-unsigned int MAXFREQ_LEVEL_SUPPORTED = 4;
+-unsigned int S5PC11X_MAXFREQLEVEL = 4;
+-unsigned int S5PC11X_FREQ_TAB;
++unsigned int MAXFREQ_LEVEL_SUPPORTED = 6;
++unsigned int S5PC11X_MAXFREQLEVEL = 5;
++unsigned int S5PC11X_FREQ_TAB = 1;
+ static spinlock_t g_dvfslock = SPIN_LOCK_UNLOCKED;
+ static unsigned int s5pc11x_cpufreq_level = 3;
+ unsigned int s5pc11x_cpufreq_index = 0;
+@@ -72,7 +72,7 @@
+ #if ENABLE_DVFS_LOCK_HIGH
+ unsigned int g_dvfs_high_lock_token = 0;
+ static DEFINE_MUTEX(dvfs_high_lock);
+-unsigned int g_dvfs_high_lock_limit = 4;
++unsigned int g_dvfs_high_lock_limit = 5;
+ unsigned int g_dvfslockval[NUMBER_OF_LOCKTOKEN];
+ bool g_dvfs_fix_lock_limit = false; // global variable to avoid up frequency scaling 
+ 
+@@ -83,11 +83,12 @@
+ 
+ /* frequency */
+ static struct cpufreq_frequency_table s5pc110_freq_table_1GHZ[] = {
+-	{L0, 1000*1000},
+-	{L1, 800*1000},
+-	{L2, 400*1000},
+-	{L3, 200*1000},
+-	{L4, 100*1000},
++	{L0, 1200*1000},
++	{L1, 1000*1000},
++	{L2, 800*1000},
++	{L3, 400*1000},
++	{L4, 200*1000},
++	{L5, 100*1000},
+ 	{0, CPUFREQ_TABLE_END},
+ };
+ 
+@@ -98,6 +99,7 @@
+         {3, 1},
+         {4, 2},
+         {5, 3},
++        {5, 4},
+ };
+ 
+ /* frequency */
+@@ -134,6 +136,7 @@
+ 
+ static unsigned int s5pc110_thres_table_1GHZ[][2] = {
+       	 {55, 80},
++      	 {55, 80},
+         {55, 90},
+         {60, 90},
+         {60, 90},
+@@ -723,9 +726,9 @@
+ 		g_dvfs_high_lock_limit = 5;
+ #else
+ 		S5PC11X_FREQ_TAB = 0;
+-		S5PC11X_MAXFREQLEVEL = 4;
+-		MAXFREQ_LEVEL_SUPPORTED = 5;
+-		g_dvfs_high_lock_limit = 4;
++		S5PC11X_MAXFREQLEVEL = 5;
++		MAXFREQ_LEVEL_SUPPORTED = 6;
++		g_dvfs_high_lock_limit = 5;
+ #endif
+ 	
+ 	printk("S5PC11X_FREQ_TAB=%d , S5PC11X_MAXFREQLEVEL=%d\n",S5PC11X_FREQ_TAB,S5PC11X_MAXFREQLEVEL);
+diff -ur Kernel_Original/arch/arm/mach-s5pv210/max8998_consumer.c Kernel/arch/arm/mach-s5pv210/max8998_consumer.c
+--- Kernel_Original/arch/arm/mach-s5pv210/max8998_consumer.c	2011-01-17 20:59:57.000000000 +0900
++++ Kernel/arch/arm/mach-s5pv210/max8998_consumer.c	2011-02-28 23:47:23.000000000 +0900
+@@ -88,6 +88,7 @@
+ static const unsigned int frequency_match_1GHZ[][4] = {
+ /* frequency, Mathced VDD ARM voltage , Matched VDD INT*/
+ #if 1
++        {1200000, 1300, 1100, 0},
+         {1000000, 1250, 1100, 0},
+         {800000, 1200, 1100, 1},
+         {400000, 1050, 1100, 2},
+@@ -169,6 +170,8 @@
+ };
+ #endif
+ 
++extern int exp_UV_mV[6];
++
+ static int set_max8998(unsigned int pwr, enum perf_level p_lv)
+ {
+ 	int voltage;
+@@ -176,17 +179,19 @@
+ 	int ret = 0;
+ 	const unsigned int (*frequency_match_tab)[4] = frequency_match[S5PC11X_FREQ_TAB];	
+ 
+-	DBG("%s : p_lv = %d : pwr = %d \n", __FUNCTION__, p_lv,pwr);
++//	DBG("%s : p_lv = %d : pwr = %d \n", __FUNCTION__, p_lv,pwr);
+ 
+ 	if(pwr == PMIC_ARM) {
+-		voltage = frequency_match_tab[p_lv][pwr + 1];
++//		voltage = frequency_match_tab[p_lv][pwr + 1];
++		voltage = frequency_match_tab[p_lv][pwr + 1] - exp_UV_mV[p_lv];
+ 
+ 		if(voltage == s_arm_voltage)
+ 			return ret;
+ 
+ 		pmic_val = voltage * 1000;
+ 		
+-		DBG("regulator_set_voltage =%d\n",voltage);
++//		DBG("regulator_set_voltage =%d\n",voltage);
++		DBG("regulator_set_voltage =%dmA @ %dMHz-%d UV=%d\n",voltage,frequency_match_tab[p_lv][pwr]/1000,p_lv,exp_UV_mV[p_lv]);
+ 		/*set Arm voltage*/
+ 		ret = regulator_set_voltage(Reg_Arm,pmic_val,pmic_val);
+ 	        if(ret != 0)
+@@ -210,7 +215,7 @@
+ 
+ 		pmic_val = voltage * 1000;
+ 
+-		DBG("regulator_set_voltage = %d\n",voltage);
++//		DBG("regulator_set_voltage = %d\n",voltage);
+ 		/*set Arm voltage*/
+ 		ret = regulator_set_voltage(Reg_Int, pmic_val, pmic_val);
+ 	        if(ret != 0)
+@@ -258,7 +263,7 @@
+ 
+ int set_voltage(enum perf_level p_lv)
+ {
+-	DBG("%s : p_lv = %d\n", __FUNCTION__, p_lv);
++//	DBG("%s : p_lv = %d\n", __FUNCTION__, p_lv);
+ 	if(step_curr != p_lv) 
+ 	{
+ 		/*Commenting gpio initialisation*/
+@@ -383,7 +388,8 @@
+ 	set_gpio_dvs(p_lv);
+ 	udelay(delay);
+ 
+-	DBG("[PWR] %s : level (%d -> %d), delay (%u)\n", __func__, step_curr, p_lv, delay);
++//	DBG("[PWR] %s : level (%d -> %d), delay (%u)\n", __func__, step_curr, p_lv, delay);
++	DBG("[PWR] %s : level (%d -> %d), delay (%u)\n", __func__, frequency_match_tab[step_curr][0], frequency_match_tab[p_lv][0], delay);
+ 
+ 	step_curr = p_lv;
+ 
+diff -ur Kernel_Original/drivers/cpufreq/cpufreq.c Kernel/drivers/cpufreq/cpufreq.c
+--- Kernel_Original/drivers/cpufreq/cpufreq.c	2010-10-30 20:36:27.000000000 +0900
++++ Kernel/drivers/cpufreq/cpufreq.c	2011-02-28 23:54:42.000000000 +0900
+@@ -31,6 +31,7 @@
+ 
+ #define dprintk(msg...) cpufreq_debug_printk(CPUFREQ_DEBUG_CORE, \
+ 						"cpufreq-core", msg)
++int exp_UV_mV[6];
+ 
+ /**
+  * The "cpufreq driver" - the arch- or hardware-dependent low
+@@ -573,6 +574,24 @@
+ 	return -EINVAL;
+ }
+ 
++static ssize_t show_UV_mV_table(struct cpufreq_policy *policy, char *buf)
++{
++	return sprintf(buf, "%d %d %d %d %d %d\n", exp_UV_mV[0],exp_UV_mV[1],exp_UV_mV[2],exp_UV_mV[3],exp_UV_mV[4],exp_UV_mV[5]);
++//	return -EINVAL;
++}
++
++static ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
++					const char *buf, size_t count)
++{
++	unsigned int ret = -EINVAL;
++
++	ret = sscanf(buf, "%d %d %d %d %d %d", &exp_UV_mV[0],&exp_UV_mV[1],&exp_UV_mV[2],&exp_UV_mV[3],&exp_UV_mV[4],&exp_UV_mV[5]);
++	if (ret != 1)
++		return -EINVAL;
++	else 
++		return count;
++
++}
+ 
+ /**
+  * store_scaling_governor - store policy for the specified CPU
+@@ -754,6 +773,7 @@
+ //define_one_rw(scaling_setspeed);
+ define_one_rw_0666(scaling_governor);
+ define_one_rw_0666(scaling_setspeed);
++define_one_rw(UV_mV_table);
+ define_one_rw(scaling_setlog);
+ #if defined SET_AUDIO_LOG
+ define_one_rw(set_audio_log);
+@@ -768,6 +788,7 @@
+ 	&affected_cpus.attr,
+ 	&related_cpus.attr,
+ 	&scaling_governor.attr,
++	&UV_mV_table.attr,
+ 	&scaling_driver.attr,
+ 	&scaling_available_governors.attr,
+ 	&scaling_setspeed.attr,
